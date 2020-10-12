@@ -3,7 +3,7 @@ import TextComponent from './components/text-component';
 import DenemeComponent from './components/deneme-component';
 import Example from  './components/hookComponent';
 import logo from './logo.svg';
-import DenemeContextProvider from './contexts/denemeContext';
+import DenemeContextProvider from './contexts/DenemeContext';
 import './App.css';
 
 function App() {
@@ -52,7 +52,7 @@ const user = { name: 'Tania', loggedIn: true }
           <DenemeContextProvider value={user}> 
           <Example/>
           <TextComponent  />
-          <button>deneme</button>
+         
           <img src={logo} className="App-logo" alt="logo" />
           </DenemeContextProvider>
        
