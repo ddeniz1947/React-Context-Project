@@ -1,22 +1,23 @@
-import React, { Component ,createContext} from 'react';
+import React, { Component, createContext } from 'react';
 export const DenemeContext = createContext();
 
-class DenemeContextProvider extends Component{
+class DenemeContextProvider extends Component {
 
     state = {
-        denemeContextData : ''
+        denemeContextData: ''
     }
-    
-    deneme= (denemeContextData)  => {
-       this.setState( {
-        denemeContextData : denemeContextData
-       })
+
+    deneme = (denemeContextData) => {
+        this.setState({
+            denemeContextData: denemeContextData
+        })
     }
+
     render() {
         return (
-            <DenemeContext.Provider value={{ ...this.state,deneme : this.deneme, state:this.state }}>
-            {this.props.children}
-        </DenemeContext.Provider>
+            <DenemeContext.Provider value={{ ...this.state, deneme: this.deneme, state: this.state }}>
+                {this.props.children}
+            </DenemeContext.Provider>
         );
     }
 }

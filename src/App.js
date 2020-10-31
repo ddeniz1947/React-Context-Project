@@ -1,66 +1,130 @@
-import React, { Component } from 'react';
+import React, { setState, useState, useEffect, useContext, Component } from 'react';
 import TextComponent from './components/text-component';
 import DenemeComponent from './components/deneme-component';
-import Example from  './components/hookComponent';
+import HookComponent from './components/hookComponent';
+import Example from './components/hookComponent';
 import logo from './logo.svg';
 import DenemeContextProvider from './contexts/DenemeContext';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
 import './App.css';
 
-function App() {
+import ReactDOM from 'react-dom';
+class App extends Component {
 
-const user = { name: 'Tania', loggedIn: true }
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     denemeData: '',
-  //     boolData: false
-  // //   }
-  //   this.nameSurnameChange = this.nameSurnameChange.bind(this);
-  //   this.clickFunc = this.clickFunc.bind(this);
-  // }
-
-
-  // componentDidMount(() => {
-  //   console.log("APP COMPONENT CALISTI");
-  // });
+  // const [user] = useState("");
+  constructor(props) {
+    super(props);
+    this.state = {
+      userDataArray: [],
+      boolData: false,
+      userName: ""
+    }
+    this.addUserMethod = this.addUserMethod.bind(this);
+    this.takeDataFunc = this.takeDataFunc.bind(this);
+  }
 
 
+  addUserMethod(e) {
+    this.setState({ userName: e.target.value });
+  }
 
-  const nameSurnameChange = ((data) => {
-    // console.log(data.target.value);
-    this.setState({ denemeData: data.target.value })
-  });
-
-  const clickFunc = (() => {
-    this.setState({ boolData: true });
-    console.log(this.state.denemeData);
-    fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyBA7X3dN_AXkK3HTD9b3AFTW-i0MPfUr94&cx=017576662512468239146:omuauf_lfve&q='${this.state.denemeData}'`, {
+  takeDataFunc() {
+    fetch(`https://localhost:44302/api/values`, {
       "method": "GET",
     })
+      .then(response => response.json())
       .then(response => {
         console.log(response);
-      })
-      .catch(err => {
-        console.log(err);
+        let arrayTry = [];
+        var joined = arrayTry.concat(response);
+        this.setState({ userDataArray: joined });
       });
-  });
+  }
 
-  // render() {
+  componentDidMount() {
+    fetch(`https://localhost:44302/api/values`, {
+      "method": "GET",
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        let arrayTry = [];
+        var joined = arrayTry.concat(response);
+        this.setState({ userDataArray: joined });
+      });
+  }
+
+  render() {
     return (
+
       <div className="App">
-        <header className="App-header">
-          <DenemeContextProvider value={user}> 
-          <Example/>
-          <TextComponent  />
-         
-          <img src={logo} className="App-logo" alt="logo" />
-          </DenemeContextProvider>
-       
-        </header>
+        <input onChange={this.addUserMethod} />
+
+        <Router>
+          <div>
+            <Link to="/text">Take Data</Link>
+          </div>
+          <div>
+            <Link to="/hookpost">Send Data</Link>
+          </div>
+          <Switch>
+            <Route path="/text">
+              <button onClick={this.takeDataFunc}>Veri Çek</button>
+            </Route>
+            <Route path="/hookpost">
+              <HookComponent addNameProp={this.state.userName} />
+            </Route>
+          </Switch>
+        </Router>
+
+        { this.state.userDataArray.length != 0 ?
+          <div style={{ display: "flex", textAlign: "center" }}>
+            <table class="table table-dark" style={{ width: '50vw', marginRight: 'auto', marginLeft: 'auto' }}>
+              <thead>
+                <tr>
+                  <th scope="col">Select User</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr> {this.state.userDataArray.map((item, i) => <div key={i} >{item.userName}</div>)}</tr>
+              </tbody>
+            </table>
+          </div>
+          :
+          <div style={{ display: "flex", textAlign: "center" }}>
+            <table class="table table-dark" style={{ width: '50vw', marginRight: 'auto', marginLeft: 'auto' }}>
+              <thead>
+                <tr>
+                  <th scope="col">First</th>
+                  {/* <th scope="col">Last</th>
+                            <th scope="col">Handle</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  NO DATA
+                 </tr>
+              </tbody>
+            </table>
+          </div>
+
+        }
+
+
+
+        {/*        
+        <DenemeContextProvider>
+          <Example />
+        </DenemeContextProvider> */}
       </div>
     );
-  
-
+  }
 }
 
 export default App;
